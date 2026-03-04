@@ -6,6 +6,8 @@ import UnitsSection from "@/components/UnitsSection";
 import ProgramsSection from "@/components/ProgramsSection";
 import SupplementsSection from "@/components/SupplementsSection";
 import StatsSection from "@/components/StatsSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 import FloatingInstagramButton from "@/components/FloatingInstagramButton";
 import FloatingWhatsAppButton from "@/components/FloatingWhatsAppButton";
@@ -19,9 +21,6 @@ const Index = () => {
         description="Domine seu corpo na DARK'SGYM. Equipamentos de ponta, ambiente de elite e funcionamento 24 horas. Encontre a unidade mais próxima e comece seu legado."
       />
 
-      {/* Noise Effect Overlay */}
-      {/* <div className="noise" /> */}
-      
       {/* Background Orbs & Technical Grid */}
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:40px_40px]" />
@@ -51,15 +50,18 @@ const Index = () => {
         </FadeIn>
 
         <FadeIn>
+          <TestimonialsSection />
+        </FadeIn>
+
+        <FadeIn>
           <div id="suplementos" className="relative overflow-hidden">
             <SupplementsSection />
           </div>
         </FadeIn>
 
-        {/* A seção de planos foi removida conforme solicitado */}
-        {/* <div id="planos" className="bg-black">
-          <PricingSection />
-        </div> */}
+        <FadeIn>
+          <FAQSection />
+        </FadeIn>
 
         <FadeIn>
           <div className="relative pt-32 pb-16 bg-black">
@@ -87,18 +89,6 @@ const Index = () => {
           writing-mode: vertical-rl;
           text-orientation: mixed;
         }
-        /* .noise {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          content: "";
-          opacity: .03;
-          z-index: 50;
-          pointer-events: none;
-          background-image: url("https://grainy-gradients.vercel.app/noise.svg");
-        } */
       `}</style>
     </div>
   );

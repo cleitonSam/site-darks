@@ -7,7 +7,8 @@ import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AdminUnits from "./pages/AdminUnits";
-import Careers from "./pages/Careers"; // Importa o novo componente
+import AdminCareers from "./pages/AdminCareers";
+import Careers from "./pages/Careers";
 
 const queryClient = new QueryClient();
 
@@ -21,8 +22,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/admin/units" element={<AdminUnits />} />
-            <Route path="/trabalhe-conosco" element={<Careers />} /> {/* Nova rota para trabalhe conosco */}
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/admin/careers" element={<AdminCareers />} />
+            <Route path="/trabalhe-conosco" element={<Careers />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </HelmetProvider>
