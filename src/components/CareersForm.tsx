@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChevronRight, Paperclip, X } from "lucide-react";
 import { showSuccess, showError } from "@/utils/toast";
-import { submitCareerForm, NocoDBCareer } from "@/hooks/useCareersData";
+import { submitCareerForm, uploadFile, NocoDBCareer } from "@/hooks/useCareersData";
 
 const careerSchema = z.object({
   Nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
@@ -60,11 +60,15 @@ const CareersForm: React.FC = () => {
 
     setIsSubmitting(true);
     try {
+      // 1. Upload do arquivo para o NocoDB
+      const uploadResponse = await uploadFile(selectedFile);
+      
+      // 2. Envio dos dados com a referência do arquivo
       const payload: NocoDBCareer = {
         Nome: data.Nome,
         "E-mail": data.Email,
         Telefone: data.Telefone,
-        "Currículo": `Arquivo: ${selectedFile.name}`,
+        "Currículo": uploadResponse, // O NocoDB espera o array/objeto retornado pelo upload
         Motivo: data.Mensagem,
       };
 
@@ -72,8 +76,9 @@ const CareersForm: React.FC = () => {
       showSuccess("Candidatura enviada com sucesso!");
       form.reset();
       removeFile();
-    } catch (error) {
-      showError("Erro ao enviar candidatura.");
+    } catch (error: any) {
+      console.error(error);
+      showError(`Erro ao enviar candidatura: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
