@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
 export const NOCODB_CAREERS_TABLE_ID = "mia6haac127vhn6"; 
-const NOCODB_API_BASE_URL = "https://auto-nocodb.fesqdn.easypanel.host/api/v2/tables";
-const NOCODB_API_TOKEN = "nrUcWLti4g7sq9DDozerYytubAt8_7lvFEw0Ek6H";
+// Alterado para a URL do NocoDB Cloud conforme o seu link
+export const NOCODB_API_BASE_URL_CLOUD = "https://app.nocodb.com/api/v2/tables";
+export const NOCODB_API_TOKEN = "nrUcWLti4g7sq9DDozerYytubAt8_7lvFEw0Ek6H";
 
 export interface NocoDBCareer {
   Id?: number;
@@ -19,7 +20,7 @@ const headers = {
 };
 
 export const fetchCareers = async (): Promise<NocoDBCareer[]> => {
-  const url = `${NOCODB_API_BASE_URL}/${NOCODB_CAREERS_TABLE_ID}/records?limit=100&sort=-Id`;
+  const url = `${NOCODB_API_BASE_URL_CLOUD}/${NOCODB_CAREERS_TABLE_ID}/records?limit=100&sort=-Id`;
   
   const response = await fetch(url, { headers });
   if (!response.ok) {
@@ -38,7 +39,7 @@ export function useCareersData() {
 }
 
 export const submitCareerForm = async (formData: NocoDBCareer) => {
-  const url = `${NOCODB_API_BASE_URL}/${NOCODB_CAREERS_TABLE_ID}/records`;
+  const url = `${NOCODB_API_BASE_URL_CLOUD}/${NOCODB_CAREERS_TABLE_ID}/records`;
   const payload = [formData];
   
   const response = await fetch(url, {

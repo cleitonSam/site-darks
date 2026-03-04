@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useCareersData, NOCODB_CAREERS_TABLE_ID } from "@/hooks/useCareersData";
+import { useCareersData, NOCODB_CAREERS_TABLE_ID, NOCODB_API_BASE_URL_CLOUD, NOCODB_API_TOKEN } from "@/hooks/useCareersData";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Mail, Phone, AlertCircle } from "lucide-react";
@@ -27,7 +27,7 @@ const AdminCareers: React.FC = () => {
   const deleteCareer = async (id: number | undefined) => {
     if (!id) return;
 
-    const url = `https://auto-nocodb.fesqdn.easypanel.host/api/v2/tables/${NOCODB_CAREERS_TABLE_ID}/records`;
+    const url = `${NOCODB_API_BASE_URL_CLOUD}/${NOCODB_CAREERS_TABLE_ID}/records`;
     const payload = [{ Id: id }];
 
     try {
@@ -35,7 +35,7 @@ const AdminCareers: React.FC = () => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "xc-token": "nrUcWLti4g7sq9DDozerYytubAt8_7lvFEw0Ek6H",
+          "xc-token": NOCODB_API_TOKEN,
         },
         body: JSON.stringify(payload),
       });
