@@ -8,6 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ChevronRight, Paperclip, X } from "lucide-react";
 import { showSuccess, showError } from "@/utils/toast";
 import { submitCareerForm, uploadFile, NocoDBCareer } from "@/hooks/useCareersData";
@@ -16,10 +23,22 @@ const careerSchema = z.object({
   Nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
   Email: z.string().email("Insira um e-mail válido."),
   Telefone: z.string().min(10, "O telefone deve ter pelo menos 10 dígitos."),
+  Vaga: z.string().min(1, "Selecione uma vaga de interesse."),
   Mensagem: z.string().min(10, "A mensagem deve ter pelo menos 10 caracteres."),
 });
 
 type CareerFormData = z.infer<typeof careerSchema>;
+
+const VAGAS = [
+  "ASSISTENTE FINANCEIRO",
+  "ASSISTENTE DE RH",
+  "GERENTE DE UNIDADE",
+  "PROFESSOR DE MUSCULAÇÃO",
+  "ESTAGIÁRIO DE MUSCULAÇÃO",
+  "CONSULTOR DE VENDAS",
+  "AUXILIAR DE LIMPEZA",
+  "AUXILIAR DE ESTACIONAMENTO",
+];
 
 const CareersForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,6 +51,7 @@ const CareersForm: React.FC = () => {
       Nome: "",
       Email: "",
       Telefone: "",
+      Vaga: "",
       Mensagem: "",
     },
   });
@@ -60,15 +80,14 @@ const CareersForm: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      // 1. Upload do arquivo para o NocoDB
       const uploadResponse = await uploadFile(selectedFile);
       
-      // 2. Envio dos dados com a referência do arquivo
       const payload: NocoDBCareer = {
         Nome: data.Nome,
         "E-mail": data.Email,
         Telefone: data.Telefone,
-        "Currículo": uploadResponse, // O NocoDB espera o array/objeto retornado pelo upload
+        "Vaga de interesse": data.Vaga,
+        "Currículo": uploadResponse,
         Motivo: data.Mensagem,
       };
 
@@ -111,7 +130,7 @@ const CareersForm: React.FC = () => {
             {form.formState.errors.Email && <p className="text-[10px] text-red-500 font-bold uppercase">{form.formState.errors.Email.message}</p>}
           </div>
 
-          <div className="space-y-2 md:col-span-2">
+          <div className="space-y-2">
             <Label htmlFor="Telefone" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">WhatsApp / Telefone</Label>
             <Input 
               id="Telefone" 
@@ -120,6 +139,23 @@ const CareersForm: React.FC = () => {
               placeholder="(00) 00000-0000"
             />
             {form.formState.errors.Telefone && <p className="text-[10px] text-red-500 font-bold uppercase">{form.formState.errors.Telefone.message}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="Vaga" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Vaga de Interesse</Label>
+            <Select onValueChange={(value) => form.setValue("Vaga", value)}>
+              <SelectTrigger className="bg-white/5 border-white/10 rounded-none h-12 focus:ring-0 focus:ring-offset-0">
+                <SelectValue placeholder="SELECIONE A VAGA" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-950 border-white/10 text-white">
+                {VAGAS.map((vaga) => (
+                  <SelectItem key={vaga} value={vaga} className="focus:bg-white/10 focus:text-white">
+                    {vaga}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {form.formState.errors.Vaga && <p className="text-[10px] text-red-500 font-bold uppercase">{form.formState.errors.Vaga.message}</p>}
           </div>
         </div>
 

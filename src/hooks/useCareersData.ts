@@ -10,8 +10,9 @@ export interface NocoDBCareer {
   Nome: string;
   "E-mail": string;
   Telefone: string;
-  "Currículo": any; // Agora recebe o objeto do anexo
+  "Currículo": any;
   Motivo: string;
+  "Vaga de interesse": string; // Novo campo
 }
 
 const headers = {
@@ -35,7 +36,7 @@ export const uploadFile = async (file: File) => {
     throw new Error(`Erro no upload: ${errorText}`);
   }
 
-  return response.json(); // Retorna o objeto do arquivo que o NocoDB espera
+  return response.json();
 };
 
 export const fetchCareers = async (): Promise<NocoDBCareer[]> => {

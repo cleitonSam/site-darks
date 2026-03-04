@@ -4,7 +4,7 @@ import React from "react";
 import { useCareersData, NOCODB_CAREERS_TABLE_ID, NOCODB_API_BASE_URL_CLOUD, NOCODB_API_TOKEN } from "@/hooks/useCareersData";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Mail, Phone, AlertCircle } from "lucide-react";
+import { Trash2, Mail, Phone, AlertCircle, Briefcase } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { showSuccess, showError } from "@/utils/toast";
 import {
@@ -83,7 +83,10 @@ const AdminCareers: React.FC = () => {
               <CardHeader className="border-b border-white/5 bg-white/[0.02] flex flex-row items-center justify-between">
                 <div>
                   <CardTitle className="text-xl font-bold text-white uppercase italic">{career.Nome}</CardTitle>
-                  <p className="text-xs font-black text-primary uppercase tracking-widest mt-1">{career["Currículo"]}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Briefcase size={12} className="text-primary" />
+                    <p className="text-[10px] font-black text-primary uppercase tracking-widest">{career["Vaga de interesse"] || "NÃO INFORMADA"}</p>
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <AlertDialog>
@@ -116,6 +119,10 @@ const AdminCareers: React.FC = () => {
                   <div className="flex items-center gap-3 text-white/70">
                     <Phone size={16} className="text-white/30" />
                     <span className="text-sm">{career.Telefone}</span>
+                  </div>
+                  <div className="pt-2">
+                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest block mb-1">Currículo</span>
+                    <p className="text-xs font-bold text-white/70 truncate">{career["Currículo"] ? "Anexo Enviado" : "Sem Anexo"}</p>
                   </div>
                 </div>
                 <div className="md:col-span-2">
