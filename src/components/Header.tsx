@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
-import GeolocationStatusIndicator from "@/components/GeolocationStatusIndicator"; // Importa o componente
+import GeolocationStatusIndicator from "@/components/GeolocationStatusIndicator";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -22,6 +22,7 @@ const Header = () => {
     { name: "Início", href: "#" },
     { name: "Diferenciais", href: "#diferenciais" },
     { name: "Unidades", href: "#unidades" },
+    { name: "Trabalhe Conosco", href: "/trabalhe-conosco" }, // Adicionada nova rota
   ];
 
   return (
@@ -50,14 +51,14 @@ const Header = () => {
               </a>
             ))}
           </nav>
-          <GeolocationStatusIndicator /> {/* Adicionado aqui para desktop */}
+          <GeolocationStatusIndicator />
         </div>
 
         {/* Mobile Toggle */}
         <div className="flex items-center md:hidden">
-          <GeolocationStatusIndicator /> {/* Adicionado aqui para mobile, antes do botão de menu */}
+          <GeolocationStatusIndicator />
           <button 
-            className="text-white ml-4" // Adicionado margem para separar do indicador
+            className="text-white ml-4" 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
