@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-// IMPORTANTE: Verifique o ID correto da tabela 'cadastro-de-curriculos' no seu NocoDB
-// O ID 'b4b62cfe...' parece estar incorreto (retornando 404).
-export const NOCODB_CAREERS_TABLE_ID = "b4b62cfe-d329-4b29-bdc2-a203234f0e11"; 
+// ID extraído da URL fornecida: mia6haac127vhn6
+export const NOCODB_CAREERS_TABLE_ID = "mia6haac127vhn6"; 
 const NOCODB_API_BASE_URL = "https://auto-nocodb.fesqdn.easypanel.host/api/v2/tables";
 const NOCODB_API_TOKEN = "nrUcWLti4g7sq9DDozerYytubAt8_7lvFEw0Ek6H";
 
