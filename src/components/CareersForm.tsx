@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+import { ChevronRight, Paperclip, X } from "lucide-react";
 import { showSuccess, showError } from "@/utils/toast";
 import { submitCareerForm, NocoDBCareer } from "@/hooks/useCareersData";
 
@@ -19,14 +18,14 @@ const careerSchema = z.object({
   Telefone: z.string().min(10, "O telefone deve ter pelo menos 10 dígitos."),
   Cargo: z.string().min(1, "O cargo é obrigatório."),
   Mensagem: z.string().min(10, "A mensagem deve ter pelo menos 10 caracteres."),
-  Curriculo: z.string().url("Insira uma URL válida para o currículo.").min(1, "O currículo é obrigatório."),
 });
 
 type CareerFormData = z.infer<typeof careerSchema>;
 
 const CareersForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<CareerFormData>({
     resolver: zodResolver(careerSchema),
@@ -36,98 +35,152 @@ const CareersForm: React.FC = () => {
       Telefone: "",
       Cargo: "",
       Mensagem: "",
-      Curriculo: "",
     },
   });
 
-  const onFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.size > 5 * 1024 * 1024) { // Limite de 5MB
+        showError("O arquivo deve ter no máximo 5MB.");
+        return;
+      }
+      setSelectedFile(file);
+    }
+  };
 
-    // Criar URL temporária para o arquivo
-    const fileUrl = URL.createObjectURL(file);
-    setFileUrl(fileUrl);
-
-    // Simular upload para um serviço de armazenamento
-    // Aqui você precisaria integrar com um serviço real como AWS S3, Cloudinary, etc.
-    // Para este exemplo, vamos apenas usar a URL temporária
-    form.setValue("Curriculo", fileUrl);
+  const removeFile = () => {
+    setSelectedFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const onSubmit = async (data: CareerFormData) => {
-    setIsSubmitting(true);
+    if (!selectedFile) {
+      showError("Por favor, anexe seu currículo.");
+      return;
+    }
 
+    setIsSubmitting(true);
     try {
-      // Cast data to NocoDBCareer to satisfy TypeScript
-      await submitCareerForm(data as NocoDBCareer);
-      showSuccess("Formulário enviado com sucesso! Entraremos em contato em breve.");
+      // Usamos asserção de tipo pois o Zod já garantiu que os campos obrigatórios estão presentes
+      const payload = {
+        ...data,
+        Curriculo: `Arquivo Anexado: ${selectedFile.name}`,
+      } as NocoDBCareer;
+
+      await submitCareerForm(payload);
+      showSuccess("Candidatura enviada com sucesso! Boa sorte.");
       form.reset();
-      setFileUrl(null);
+      removeFile();
     } catch (error) {
-      showError(`Erro ao enviar formulário: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+      showError("Erro ao enviar candidatura. Tente novamente.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="bg-zinc-950/50 border border-white/10 rounded-xl p-8">
-      <h3 className="text-2xl font-bold text-white mb-6">Trabalhe Conosco</h3>
-      
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="Nome">Nome Completo</Label>
-            <Input id="Nome" {...form.register("Nome")} />
-          </div>
-          <div>
-            <Label htmlFor="Email">E-mail</Label>
-            <Input id="Email" type="email" {...form.register("Email")} />
-          </div>
-          <div>
-            <Label htmlFor="Telefone">Telefone</Label>
-            <Input id="Telefone" type="tel" placeholder="(00) 00000-0000" {...form.register("Telefone")} />
-          </div>
-          <div>
-            <Label htmlFor="Cargo">Cargo Desejado</Label>
-            <Input id="Cargo" {...form.register("Cargo")} />
-          </div>
-        </div>
-
-        <div>
-          <Label htmlFor="Mensagem">Mensagem</Label>
-          <Textarea id="Mensagem" rows={4} {...form.register("Mensagem")} />
-        </div>
-
-        <div>
-          <Label htmlFor="Curriculo">Currículo (PDF, DOCX, ou link)</Label>
-          <div className="flex items-center gap-3">
-            <input
-              type="file"
-              id="Curriculo"
-              accept=".pdf,.doc,.docx,.txt"
-              onChange={onFileSelect}
-              className="hidden"
+    <div className="bg-zinc-950/50 border border-white/10 p-8 md:p-12 relative overflow-hidden">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-2">
+            <Label htmlFor="Nome" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Nome Completo</Label>
+            <Input 
+              id="Nome" 
+              {...form.register("Nome")} 
+              className="bg-white/5 border-white/10 rounded-none h-12 focus:border-white/30 transition-all"
+              placeholder="SEU NOME"
             />
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => document.getElementById('Curriculo')?.click()}
-            >
-              {fileUrl ? "Trocar Arquivo" : "Selecionar Arquivo"}
-            </Button>
-            {fileUrl && (
-              <Badge variant="secondary">{fileUrl.split('/').pop()?.split('?')[0] || "Arquivo selecionado"}</Badge>
-            )}
+            {form.formState.errors.Nome && <p className="text-[10px] text-red-500 font-bold uppercase">{form.formState.errors.Nome.message}</p>}
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="Email" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">E-mail de Contato</Label>
+            <Input 
+              id="Email" 
+              type="email" 
+              {...form.register("Email")} 
+              className="bg-white/5 border-white/10 rounded-none h-12 focus:border-white/30 transition-all"
+              placeholder="EMAIL@EXEMPLO.COM"
+            />
+            {form.formState.errors.Email && <p className="text-[10px] text-red-500 font-bold uppercase">{form.formState.errors.Email.message}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="Telefone" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">WhatsApp / Telefone</Label>
+            <Input 
+              id="Telefone" 
+              {...form.register("Telefone")} 
+              className="bg-white/5 border-white/10 rounded-none h-12 focus:border-white/30 transition-all"
+              placeholder="(00) 00000-0000"
+            />
+            {form.formState.errors.Telefone && <p className="text-[10px] text-red-500 font-bold uppercase">{form.formState.errors.Telefone.message}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="Cargo" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Cargo Desejado</Label>
+            <Input 
+              id="Cargo" 
+              {...form.register("Cargo")} 
+              className="bg-white/5 border-white/10 rounded-none h-12 focus:border-white/30 transition-all"
+              placeholder="EX: INSTRUTOR, RECEPÇÃO"
+            />
+            {form.formState.errors.Cargo && <p className="text-[10px] text-red-500 font-bold uppercase">{form.formState.errors.Cargo.message}</p>}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Anexar Currículo (PDF ou DOCX)</Label>
+          
+          {!selectedFile ? (
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              className="border-2 border-dashed border-white/10 p-8 text-center cursor-pointer hover:border-white/30 transition-all bg-white/[0.02]"
+            >
+              <Paperclip className="mx-auto h-8 w-8 text-white/20 mb-2" />
+              <p className="text-xs font-bold text-white/40 uppercase tracking-widest">Clique para selecionar o arquivo</p>
+              <p className="text-[9px] text-white/20 mt-1">PDF, DOCX (MÁX. 5MB)</p>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between p-4 bg-white/5 border border-white/20">
+              <div className="flex items-center gap-3">
+                <Paperclip className="h-4 w-4 text-primary" />
+                <span className="text-xs font-bold text-white uppercase truncate max-w-[200px]">{selectedFile.name}</span>
+              </div>
+              <button type="button" onClick={removeFile} className="text-white/40 hover:text-red-500 transition-colors">
+                <X size={16} />
+              </button>
+            </div>
+          )}
+          
+          <input 
+            type="file" 
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept=".pdf,.doc,.docx"
+            className="hidden"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="Mensagem" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Por que você quer ser DARK'S?</Label>
+          <Textarea 
+            id="Mensagem" 
+            rows={4} 
+            {...form.register("Mensagem")} 
+            className="bg-white/5 border-white/10 rounded-none focus:border-white/30 transition-all resize-none"
+            placeholder="CONTE-NOS SUA TRAJETÓRIA..."
+          />
+          {form.formState.errors.Mensagem && <p className="text-[10px] text-red-500 font-bold uppercase">{form.formState.errors.Mensagem.message}</p>}
         </div>
 
         <Button 
           type="submit" 
           disabled={isSubmitting}
-          className="w-full"
+          className="w-full h-16 rounded-none bg-white text-black font-black text-lg uppercase tracking-[0.2em] hover:bg-zinc-200 transition-all group"
         >
-          {isSubmitting ? "Enviando..." : "Enviar Formulário"}
+          {isSubmitting ? "ENVIANDO..." : "ENVIAR CANDIDATURA"}
+          {!isSubmitting && <ChevronRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-2" />}
         </Button>
       </form>
     </div>

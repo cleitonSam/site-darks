@@ -6,7 +6,6 @@ import UnitsSection from "@/components/UnitsSection";
 import ProgramsSection from "@/components/ProgramsSection";
 import SupplementsSection from "@/components/SupplementsSection";
 import StatsSection from "@/components/StatsSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 import FloatingInstagramButton from "@/components/FloatingInstagramButton";
@@ -47,10 +46,6 @@ const Index = () => {
           <div id="unidades" className="bg-zinc-950/50">
             <UnitsSection />
           </div>
-        </FadeIn>
-
-        <FadeIn>
-          <TestimonialsSection />
         </FadeIn>
 
         <FadeIn>
