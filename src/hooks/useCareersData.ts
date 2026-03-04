@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 
-// ID extraído da URL fornecida: mia6haac127vhn6
 export const NOCODB_CAREERS_TABLE_ID = "mia6haac127vhn6"; 
 const NOCODB_API_BASE_URL = "https://auto-nocodb.fesqdn.easypanel.host/api/v2/tables";
 const NOCODB_API_TOKEN = "nrUcWLti4g7sq9DDozerYytubAt8_7lvFEw0Ek6H";
@@ -8,12 +7,10 @@ const NOCODB_API_TOKEN = "nrUcWLti4g7sq9DDozerYytubAt8_7lvFEw0Ek6H";
 export interface NocoDBCareer {
   Id?: number;
   Nome: string;
-  Email: string;
+  "E-mail": string;
   Telefone: string;
-  Cargo: string;
-  Mensagem: string;
-  Curriculo: string;
-  DataCadastro?: string;
+  "Currículo": string;
+  Motivo: string;
 }
 
 const headers = {
@@ -42,10 +39,7 @@ export function useCareersData() {
 
 export const submitCareerForm = async (formData: NocoDBCareer) => {
   const url = `${NOCODB_API_BASE_URL}/${NOCODB_CAREERS_TABLE_ID}/records`;
-  const payload = [{ 
-    ...formData, 
-    DataCadastro: new Date().toISOString().split('T')[0] 
-  }];
+  const payload = [formData];
   
   const response = await fetch(url, {
     method: "POST",

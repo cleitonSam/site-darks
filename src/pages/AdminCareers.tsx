@@ -4,7 +4,7 @@ import React from "react";
 import { useCareersData, NOCODB_CAREERS_TABLE_ID } from "@/hooks/useCareersData";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, ExternalLink, Mail, Phone, AlertCircle } from "lucide-react";
+import { Trash2, Mail, Phone, AlertCircle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { showSuccess, showError } from "@/utils/toast";
 import {
@@ -57,7 +57,6 @@ const AdminCareers: React.FC = () => {
         <AlertCircle className="mx-auto h-12 w-12 text-destructive mb-4" />
         <h2 className="text-2xl font-bold text-white mb-2">Erro de Conexão</h2>
         <p className="text-white/50 mb-4">{error?.message}</p>
-        <p className="text-sm text-primary">Verifique se o ID da tabela no NocoDB está correto.</p>
       </div>
     );
   }
@@ -84,14 +83,9 @@ const AdminCareers: React.FC = () => {
               <CardHeader className="border-b border-white/5 bg-white/[0.02] flex flex-row items-center justify-between">
                 <div>
                   <CardTitle className="text-xl font-bold text-white uppercase italic">{career.Nome}</CardTitle>
-                  <p className="text-xs font-black text-primary uppercase tracking-widest mt-1">{career.Cargo}</p>
+                  <p className="text-xs font-black text-primary uppercase tracking-widest mt-1">{career["Currículo"]}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="border-white/10" asChild>
-                    <a href={career.Curriculo} target="_blank" rel="noreferrer">
-                      <ExternalLink size={14} className="mr-2" /> Currículo
-                    </a>
-                  </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button size="sm" variant="destructive">
@@ -117,21 +111,17 @@ const AdminCareers: React.FC = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 text-white/70">
                     <Mail size={16} className="text-white/30" />
-                    <span className="text-sm">{career.Email}</span>
+                    <span className="text-sm">{career["E-mail"]}</span>
                   </div>
                   <div className="flex items-center gap-3 text-white/70">
                     <Phone size={16} className="text-white/30" />
                     <span className="text-sm">{career.Telefone}</span>
                   </div>
-                  <div className="pt-2">
-                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Data de Envio</span>
-                    <p className="text-xs text-white/50">{career.DataCadastro ? new Date(career.DataCadastro).toLocaleDateString('pt-BR') : '-'}</p>
-                  </div>
                 </div>
                 <div className="md:col-span-2">
-                  <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Mensagem / Apresentação</span>
+                  <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Motivo / Apresentação</span>
                   <p className="text-sm text-white/70 leading-relaxed mt-2 bg-white/[0.02] p-4 rounded-lg border border-white/5">
-                    {career.Mensagem}
+                    {career.Motivo}
                   </p>
                 </div>
               </CardContent>

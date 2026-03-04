@@ -16,7 +16,6 @@ const careerSchema = z.object({
   Nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
   Email: z.string().email("Insira um e-mail válido."),
   Telefone: z.string().min(10, "O telefone deve ter pelo menos 10 dígitos."),
-  Cargo: z.string().min(1, "O cargo é obrigatório."),
   Mensagem: z.string().min(10, "A mensagem deve ter pelo menos 10 caracteres."),
 });
 
@@ -33,7 +32,6 @@ const CareersForm: React.FC = () => {
       Nome: "",
       Email: "",
       Telefone: "",
-      Cargo: "",
       Mensagem: "",
     },
   });
@@ -41,7 +39,7 @@ const CareersForm: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      if (file.size > 5 * 1024 * 1024) { // Limite de 5MB
+      if (file.size > 5 * 1024 * 1024) {
         showError("O arquivo deve ter no máximo 5MB.");
         return;
       }
@@ -62,18 +60,20 @@ const CareersForm: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      // Usamos asserção de tipo pois o Zod já garantiu que os campos obrigatórios estão presentes
-      const payload = {
-        ...data,
-        Curriculo: `Arquivo Anexado: ${selectedFile.name}`,
-      } as NocoDBCareer;
+      const payload: NocoDBCareer = {
+        Nome: data.Nome,
+        "E-mail": data.Email,
+        Telefone: data.Telefone,
+        "Currículo": `Arquivo: ${selectedFile.name}`,
+        Motivo: data.Mensagem,
+      };
 
       await submitCareerForm(payload);
-      showSuccess("Candidatura enviada com sucesso! Boa sorte.");
+      showSuccess("Candidatura enviada com sucesso!");
       form.reset();
       removeFile();
     } catch (error) {
-      showError("Erro ao enviar candidatura. Tente novamente.");
+      showError("Erro ao enviar candidatura.");
     } finally {
       setIsSubmitting(false);
     }
@@ -106,7 +106,7 @@ const CareersForm: React.FC = () => {
             {form.formState.errors.Email && <p className="text-[10px] text-red-500 font-bold uppercase">{form.formState.errors.Email.message}</p>}
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 md:col-span-2">
             <Label htmlFor="Telefone" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">WhatsApp / Telefone</Label>
             <Input 
               id="Telefone" 
@@ -115,17 +115,6 @@ const CareersForm: React.FC = () => {
               placeholder="(00) 00000-0000"
             />
             {form.formState.errors.Telefone && <p className="text-[10px] text-red-500 font-bold uppercase">{form.formState.errors.Telefone.message}</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="Cargo" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Cargo Desejado</Label>
-            <Input 
-              id="Cargo" 
-              {...form.register("Cargo")} 
-              className="bg-white/5 border-white/10 rounded-none h-12 focus:border-white/30 transition-all"
-              placeholder="EX: INSTRUTOR, RECEPÇÃO"
-            />
-            {form.formState.errors.Cargo && <p className="text-[10px] text-red-500 font-bold uppercase">{form.formState.errors.Cargo.message}</p>}
           </div>
         </div>
 
