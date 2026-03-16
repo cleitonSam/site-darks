@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import AdminUnits from "./pages/AdminUnits";
 import AdminCareers from "./pages/AdminCareers";
 import Careers from "./pages/Careers";
+import InvestorPage from "./pages/Investor";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/admin/units" element={<AdminUnits />} />
             <Route path="/admin/careers" element={<AdminCareers />} />
             <Route path="/trabalhe-conosco" element={<Careers />} />
+            <Route path="/seja-um-investidor" element={<InvestorPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </HelmetProvider>

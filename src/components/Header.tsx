@@ -19,10 +19,11 @@ const Header = () => {
   }, []);
 
   const navLinks = [
-    { name: "Início", href: "#" },
-    { name: "Diferenciais", href: "#diferenciais" },
-    { name: "Unidades", href: "#unidades" },
-    { name: "Trabalhe Conosco", href: "/trabalhe-conosco" }, // Adicionada nova rota
+    { name: "Início", href: "/" },
+    { name: "Diferenciais", href: "/#diferenciais" },
+    { name: "Unidades", href: "/#unidades" },
+    { name: "Trabalhe Conosco", href: "/trabalhe-conosco" },
+    { name: "Seja um Investidor", href: "/seja-um-investidor" },
   ];
 
   return (
