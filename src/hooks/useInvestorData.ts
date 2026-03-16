@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const NOCODB_INVESTOR_TABLE_ID = "mr6apeqfyqput1z";
 const NOCODB_API_BASE_URL_CLOUD = "https://app.nocodb.com/api/v2/tables";
-const NOCODB_API_TOKEN = import.meta.env.VITE_NOCODB_API_TOKEN;
+const NOCODB_API_TOKEN = "nrUcWLti4g7sq9DDozerYytubAt8_7lvFEw0Ek6H";
 
 export interface NocoDBInvestor {
   Id?: number;
