@@ -35,12 +35,21 @@ const UnitsSection = () => {
           isClosest: geoEnabled && index === 0 && unit.distanceKm !== undefined,
           isPromotion: isPromotion,
           idBranch: unit.idBranch ? Number(unit.idBranch) : undefined,
+          modalidade: unit.Modalidade,
         };
       })
     : [], [unitsData, geoEnabled]);
 
   const uniqueModalities = useMemo(() => {
     const modalities = new Set<string>();
+    
+    // Adiciona modalidades do NocoDB
+    unitsData?.forEach(unit => {
+      if (unit.Modalidade) {
+        unit.Modalidade.split(',').forEach(m => modalities.add(m.trim().toUpperCase()));
+      }
+    });
+
     allMemberships?.forEach(membership => {
       membership.differentials?.forEach(differential => {
         if (differential.title) {
@@ -48,17 +57,40 @@ const UnitsSection = () => {
         }
       });
     });
-    return Array.from(modalities).sort();
-  }, [allMemberships]);
+
+    const dynamicModalities = Array.from(modalities).sort();
+    
+    // Modalidades obrigatórias solicitadas pelo cliente
+    const mandatoryModalities = [
+      "JIU JITSU",
+      "PILATES",
+      "MMA",
+      "WORKOUT",
+      "YOGA",
+      "FLASHBACK"
+    ];
+
+    // Remove as obrigatórias da lista dinâmica para não duplicar, depois junta colocando as obrigatórias no início
+    const otherModalities = dynamicModalities.filter(m => !mandatoryModalities.includes(m));
+    
+    return [...mandatoryModalities, ...otherModalities];
+  }, [allMemberships, unitsData]);
 
   const filteredUnits = useMemo(() => {
     if (selectedModality === "all") {
       return units;
     }
     return units.filter(unit => {
+      // Verifica no NocoDB (campo Modalidade)
+      const nocoModalities = unit.modalidade ? unit.modalidade.split(',').map(m => m.trim().toUpperCase()) : [];
+      if (nocoModalities.includes(selectedModality)) {
+        return true;
+      }
+
+      // Verifica no EVO
       const unitMemberships = allMemberships?.filter(m => m.idBranch === unit.idBranch);
-      return unitMemberships?.some(membership => 
-        membership.differentials?.some(differential => 
+      return unitMemberships?.some(membership =>
+        membership.differentials?.some(differential =>
           differential.title.trim().toUpperCase() === selectedModality
         )
       );

@@ -1,5 +1,6 @@
 import React from "react";
 import { Instagram, MessageSquare } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 interface FooterLinkProps {
   href: string;
@@ -16,9 +17,12 @@ const FooterLink: React.FC<FooterLinkProps> = ({ href, children }) => (
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const location = useLocation();
+  const isInvestorPage = location.pathname === "/seja-um-investidor";
+  
   const logoUrl = "https://raw.githubusercontent.com/fluxodigitaltech/img-darks/refs/heads/main/Design%20sem%20nome%20(6).png";
   // Usando o número padrão do NocoDB para consistência
-  const whatsappNumber = "5511999999999"; 
+  const whatsappNumber = "5511999999999";
   const message = "Olá, gostaria de mais informações sobre a DARK'SGYM!";
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
@@ -35,11 +39,13 @@ const Footer = () => {
                 <p className="text-muted-foreground text-sm">Mais que uma academia, um estilo de vida.</p>
               </div>
             </div>
-            <p className="text-muted-foreground text-sm max-w-md">
-              Av. Martim Francisco, 786 - Vila Alto de Santo André, Santo André, SP, 09230-700
-              <br />
-              Aberto 24h, todos os dias.
-            </p>
+            {!isInvestorPage && (
+              <p className="text-muted-foreground text-sm max-w-md">
+                Av. Martim Francisco, 786 - Vila Alto de Santo André, Santo André, SP, 09230-700
+                <br />
+                Aberto 24h, todos os dias.
+              </p>
+            )}
           </div>
 
           {/* Links */}
