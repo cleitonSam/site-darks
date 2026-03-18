@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 const getTier = (name: string): 'PRO' | 'PRIME' | 'DIAMOND' | undefined => {
   const n = name.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   if (n.includes('MAUA') || n.includes('BERETTA') || n.includes('QUEIROS')) return 'PRO';
-  if (n.includes('MARTIM') || n.includes('RIBEIRAO')) return 'PRIME';
+  if (n.includes('MARTIM') || n.includes('RIBEIRAO') || n.includes('SANTO ANDRE')) return 'PRIME';
   if (n.includes('SAO CAETANO') || n.includes('SOROCABA')) return 'DIAMOND';
   return undefined;
 };
