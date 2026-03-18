@@ -88,18 +88,21 @@ const UnitsSection = () => {
   }, [allMemberships, unitsData]);
 
   // Filtra para exibir apenas modalidades que realmente têm unidades correspondentes
+  // Modalidades obrigatórias sempre aparecem
   const availableModalities = useMemo(() => {
     if (unitsLoading || membershipsLoading || units.length === 0) return uniqueModalities;
-    return uniqueModalities.filter(modality =>
-      units.some(unit => {
+    const mandatoryModalities = ["JIU JITSU", "PILATES", "MMA", "WORKOUT", "YOGA", "FLASHBACK"];
+    return uniqueModalities.filter(modality => {
+      if (mandatoryModalities.includes(modality)) return true;
+      return units.some(unit => {
         const nocoModalities = unit.modalidade ? unit.modalidade.split(',').map(m => m.trim().toUpperCase()) : [];
         if (nocoModalities.includes(modality)) return true;
         const unitMemberships = allMemberships?.filter(m => m.idBranch === unit.idBranch);
         return unitMemberships?.some(membership =>
           membership.differentials?.some(d => d.title.trim().toUpperCase() === modality)
         );
-      })
-    );
+      });
+    });
   }, [uniqueModalities, units, allMemberships, unitsLoading, membershipsLoading]);
 
   const filteredUnits = useMemo(() => {
