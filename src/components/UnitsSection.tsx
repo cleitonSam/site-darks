@@ -7,6 +7,16 @@ import { useMembershipsData } from "@/hooks/useMembershipsData";
 import UnitCard from "@/components/UnitCard";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { HardHat, Gem } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+
+const getTier = (name: string): 'PRO' | 'PRIME' | 'DIAMOND' | undefined => {
+  const n = name.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (n.includes('MAUA') || n.includes('BERETTA') || n.includes('QUEIROS')) return 'PRO';
+  if (n.includes('MARTIM') || n.includes('RIBEIRAO')) return 'PRIME';
+  if (n.includes('SAO CAETANO') || n.includes('SOROCABA')) return 'DIAMOND';
+  return undefined;
+};
 
 const UnitsSection = () => {
   const { coordinates: userCoords, isEnabled: geoEnabled } = useToggleGeolocation();
@@ -36,6 +46,7 @@ const UnitsSection = () => {
           isPromotion: isPromotion,
           idBranch: unit.idBranch ? Number(unit.idBranch) : undefined,
           modalidade: unit.Modalidade,
+          tier: getTier(unit.Unidade),
         };
       })
     : [], [unitsData, geoEnabled]);
@@ -72,9 +83,24 @@ const UnitsSection = () => {
 
     // Remove as obrigatórias da lista dinâmica para não duplicar, depois junta colocando as obrigatórias no início
     const otherModalities = dynamicModalities.filter(m => !mandatoryModalities.includes(m));
-    
+
     return [...mandatoryModalities, ...otherModalities];
   }, [allMemberships, unitsData]);
+
+  // Filtra para exibir apenas modalidades que realmente têm unidades correspondentes
+  const availableModalities = useMemo(() => {
+    if (unitsLoading || membershipsLoading || units.length === 0) return uniqueModalities;
+    return uniqueModalities.filter(modality =>
+      units.some(unit => {
+        const nocoModalities = unit.modalidade ? unit.modalidade.split(',').map(m => m.trim().toUpperCase()) : [];
+        if (nocoModalities.includes(modality)) return true;
+        const unitMemberships = allMemberships?.filter(m => m.idBranch === unit.idBranch);
+        return unitMemberships?.some(membership =>
+          membership.differentials?.some(d => d.title.trim().toUpperCase() === modality)
+        );
+      })
+    );
+  }, [uniqueModalities, units, allMemberships, unitsLoading, membershipsLoading]);
 
   const filteredUnits = useMemo(() => {
     if (selectedModality === "all") {
@@ -129,7 +155,7 @@ const UnitsSection = () => {
             >
               Todas
             </Button>
-            {uniqueModalities.map(modality => (
+            {availableModalities.map(modality => (
               <Button
                 key={modality}
                 size="sm"
@@ -156,13 +182,52 @@ const UnitsSection = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredUnits.length > 0 ? (
-              filteredUnits.map((unit, index) => (
-                <UnitCard 
-                  key={index} 
-                  unit={unit} 
-                  allMemberships={allMemberships || []}
-                />
-              ))
+              <>
+                {filteredUnits.map((unit, index) => (
+                  <UnitCard
+                    key={index}
+                    unit={unit}
+                    allMemberships={allMemberships || []}
+                  />
+                ))}
+                {(selectedModality === "all") && (
+                  <>
+                    {[
+                      { name: "DARKS GYM SÃO CAETANO", address: "São Caetano do Sul, SP" },
+                      { name: "DARKS GYM SOROCABA", address: "Sorocaba, SP" },
+                    ].map((comingSoonUnit) => (
+                      <div
+                        key={comingSoonUnit.name}
+                        className="relative overflow-hidden rounded-xl bg-zinc-950 border border-cyan-400/30 flex flex-col h-full min-h-[400px]"
+                      >
+                        <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(34,211,238,0.03)_10px,rgba(34,211,238,0.03)_20px)]" />
+                        <div className="relative z-10 flex flex-col flex-grow p-6 items-center justify-between">
+                          <div className="w-full flex items-start justify-between">
+                            <div className="flex flex-wrap gap-1">
+                              <Badge className="inline-flex items-center px-2 py-0.5 bg-cyan-400 text-black text-[8px] font-black uppercase tracking-tighter">
+                                <Gem size={10} className="mr-1" /> DIAMOND
+                              </Badge>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-center text-center flex-grow justify-center py-8">
+                            <HardHat size={56} className="text-cyan-400/60 mb-4 animate-bounce" />
+                            <Badge className="bg-yellow-500 text-black text-xs font-black uppercase tracking-widest px-4 py-1.5 mb-4">
+                              EM OBRA
+                            </Badge>
+                            <h3 className="font-black italic uppercase tracking-tighter leading-none text-2xl text-white mb-2">
+                              {comingSoonUnit.name}
+                            </h3>
+                            <p className="text-xs text-white/50 font-medium">{comingSoonUnit.address}</p>
+                          </div>
+                          <p className="text-[10px] text-cyan-400/50 font-bold uppercase tracking-widest text-center">
+                            Em breve
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </>
             ) : (
               <div className="md:col-span-3 text-center text-white/50 py-10">
                 <p className="text-lg">Nenhuma unidade encontrada para a modalidade selecionada.</p>
