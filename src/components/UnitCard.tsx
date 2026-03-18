@@ -150,17 +150,17 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
         <div className="absolute top-4 left-4 right-4 flex items-start justify-between z-10">
           <div>
             {unit.isClosest && <Badge className="inline-flex items-center px-2 py-0.5 bg-white text-black text-[8px] font-black uppercase tracking-tighter mb-1 mr-1"><MapPin size={10} className="mr-1" /> PRÓXIMA</Badge>}
-            {unit.isPromotion && <Badge className="inline-flex items-center px-2 py-0.5 bg-promotion text-promotion-foreground text-[8px] font-black uppercase tracking-tighter mb-1 mr-1"><Tag size={10} className="mr-1" /> PROMOÇÃO</Badge>}
+            {unit.isPromotion && <Badge className="inline-flex items-center px-2.5 py-1 bg-promotion text-promotion-foreground text-[11px] font-black uppercase tracking-tighter mb-1 mr-1"><Tag size={12} className="mr-1" /> PROMOÇÃO</Badge>}
             {unit.tier && (
               <Badge className={cn(
-                "inline-flex items-center px-2 py-0.5 text-[8px] font-black uppercase tracking-tighter mb-1 mr-1",
+                "inline-flex items-center px-2.5 py-1 text-[11px] font-black uppercase tracking-tighter mb-1 mr-1",
                 unit.tier === 'PRO' && "bg-amber-500 text-black",
                 unit.tier === 'PRIME' && "bg-slate-200 text-black",
                 unit.tier === 'DIAMOND' && "bg-cyan-400 text-black",
               )}>
-                {unit.tier === 'PRO' && <Zap size={10} className="mr-1" />}
-                {unit.tier === 'PRIME' && <Star size={10} className="mr-1" />}
-                {unit.tier === 'DIAMOND' && <Gem size={10} className="mr-1" />}
+                {unit.tier === 'PRO' && <Zap size={12} className="mr-1" />}
+                {unit.tier === 'PRIME' && <Star size={12} className="mr-1" />}
+                {unit.tier === 'DIAMOND' && <Gem size={12} className="mr-1" />}
                 {unit.tier}
               </Badge>
             )}
