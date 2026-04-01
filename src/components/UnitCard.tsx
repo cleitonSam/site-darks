@@ -15,6 +15,7 @@ interface UnitCardProps {
     imageUrl?: string;
     whatsappNumber?: string;
     instagramLink?: string;
+    purchaseLink?: string;
     latitude?: number;
     longitude?: number;
     distanceKm?: number;
@@ -118,14 +119,18 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
     };
   }, [selectedPlan, unit.isPromotion]);
 
-  // Gera o link de matrícula: usa urlSale do EVO se disponível, senão constrói o padrão
+  // Gera o link de matrícula:
+  // 1. urlSale do plano no EVO (mais específico)
+  // 2. Link construído pelo padrão EVO (idBranch + idMembership)
+  // 3. Link de compra do NocoDB (fallback geral da unidade)
   const purchaseUrl = useMemo(() => {
     if (selectedPlan?.urlSale) return selectedPlan.urlSale;
     if (selectedPlan && unit.idBranch) {
       return `https://evo-totem.w12app.com.br/darksgym/${unit.idBranch}/site/landing-page/checkout/${selectedPlan.idMembership}/0`;
     }
+    if (unit.purchaseLink) return unit.purchaseLink;
     return undefined;
-  }, [selectedPlan, unit.idBranch]);
+  }, [selectedPlan, unit.idBranch, unit.purchaseLink]);
 
   const whatsappLink = unit.whatsappNumber
     ? `https://wa.me/${unit.whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent("Olá, gostaria de mais informações sobre a unidade " + unit.name + "!")}`
