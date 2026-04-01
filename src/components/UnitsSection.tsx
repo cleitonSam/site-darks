@@ -16,6 +16,15 @@ const getTier = (name: string): 'PRO' | 'PRIME' | 'DIAMOND' | undefined => {
   return undefined;
 };
 
+// Mapeamento fixo de nome da unidade → idBranch do EVO (fallback quando NocoDB não tiver o campo)
+const getIdBranchFallback = (name: string): number | undefined => {
+  const n = name.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (n.includes('SANTO ANDRE')) return 1;
+  if (n.includes('MAUA')) return 2;
+  if (n.includes('RIBEIRAO')) return 3;
+  return undefined;
+};
+
 const UnitsSection = () => {
   const { coordinates: userCoords, isEnabled: geoEnabled } = useToggleGeolocation();
   const { data: unitsData, isLoading: unitsLoading } = useUnitsData(geoEnabled ? userCoords : null);
@@ -42,7 +51,8 @@ const UnitsSection = () => {
           distanceKm: unit.distanceKm,
           isClosest: geoEnabled && index === 0 && unit.distanceKm !== undefined,
           isPromotion: isPromotion,
-          idBranch: unit.idBranch ? Number(unit.idBranch) : undefined,
+          isComingSoon: unit['Em Breve'] === true || String(unit['Em Breve']).toLowerCase() === 'true',
+          idBranch: unit.idBranch ? Number(unit.idBranch) : getIdBranchFallback(unit.Unidade),
           modalidade: unit.Modalidade,
           tier: getTier(unit.Unidade),
         };

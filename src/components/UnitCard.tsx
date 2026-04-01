@@ -21,6 +21,7 @@ interface UnitCardProps {
     distanceKm?: number;
     isClosest: boolean;
     isPromotion: boolean;
+    isComingSoon?: boolean;
     idBranch?: number;
     tier?: 'PRO' | 'PRIME' | 'DIAMOND';
   };
@@ -214,7 +215,26 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
 
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex-grow flex flex-col justify-between">
-          {selectedPlan ? (
+          {unit.isComingSoon ? (
+            /* EM BREVE: só mostra mensagem e botões */
+            <>
+              <div className="flex-grow flex flex-col justify-center items-center text-center text-white/50 bg-zinc-900/70 backdrop-blur-sm border border-white/10 p-6 rounded-lg mb-4">
+                <p className="text-2xl font-black italic uppercase tracking-tighter text-white mb-1">EM BREVE</p>
+                <p className="text-xs text-white/40 uppercase tracking-widest">Acompanhe nossas redes sociais</p>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                <Button size="sm" variant="outline" className="h-9 rounded-md border-white/20 text-white font-black text-[9px] uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300" asChild disabled={!mapsLink}>
+                  <a href={mapsLink} target="_blank" rel="noopener noreferrer"><MapPin size={12} className="mr-1" /> MAPS</a>
+                </Button>
+                <Button size="sm" variant="outline" className="h-9 rounded-md border-white/20 text-white font-black text-[9px] uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300" asChild disabled={!whatsappLink}>
+                  <a href={whatsappLink} target="_blank" rel="noopener noreferrer"><MessageSquare size={12} className="mr-1" /> WHATSAPP</a>
+                </Button>
+                <Button size="sm" variant="outline" className="h-9 rounded-md border-white/20 text-white font-black text-[9px] uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300" asChild disabled={!unit.instagramLink}>
+                  <a href={unit.instagramLink} target="_blank" rel="noopener noreferrer"><Instagram size={12} className="mr-1" /> INSTAGRAM</a>
+                </Button>
+              </div>
+            </>
+          ) : selectedPlan ? (
             <div className="bg-zinc-900/70 backdrop-blur-sm border border-white/10 flex flex-col rounded-lg p-3 mb-3 flex-grow">
               <h4 className="text-center text-xs font-bold uppercase tracking-widest text-white/70 mb-3">
                 Selecione seu Plano
@@ -286,30 +306,32 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
             </div>
           )}
 
-          <div>
-            <Button 
-              size="sm" 
-              className="h-10 w-full rounded-md bg-white text-black font-black text-[10px] uppercase tracking-widest hover:bg-zinc-200 mb-2 transition-all duration-300"
-              asChild
-              disabled={!purchaseUrl}
-            >
-              <a href={purchaseUrl || '#'} target="_blank" rel="noopener noreferrer">
-                <ShoppingCart size={12} className="mr-2" /> MATRICULAR
-              </a>
-            </Button>
+          {!unit.isComingSoon && (
+            <div>
+              <Button
+                size="sm"
+                className="h-10 w-full rounded-md bg-white text-black font-black text-[10px] uppercase tracking-widest hover:bg-zinc-200 mb-2 transition-all duration-300"
+                asChild
+                disabled={!purchaseUrl}
+              >
+                <a href={purchaseUrl || '#'} target="_blank" rel="noopener noreferrer">
+                  <ShoppingCart size={12} className="mr-2" /> MATRICULAR
+                </a>
+              </Button>
 
-            <div className="grid grid-cols-3 gap-2">
-              <Button size="sm" variant="outline" className="h-9 rounded-md border-white/20 text-white font-black text-[9px] uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300" asChild disabled={!mapsLink}>
-                <a href={mapsLink} target="_blank" rel="noopener noreferrer"><MapPin size={12} className="mr-1" /> MAPS</a>
-              </Button>
-              <Button size="sm" variant="outline" className="h-9 rounded-md border-white/20 text-white font-black text-[9px] uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300" asChild disabled={!whatsappLink}>
-                <a href={whatsappLink} target="_blank" rel="noopener noreferrer"><MessageSquare size={12} className="mr-1" /> WHATSAPP</a>
-              </Button>
-              <Button size="sm" variant="outline" className="h-9 rounded-md border-white/20 text-white font-black text-[9px] uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300" asChild disabled={!unit.instagramLink}>
-                <a href={unit.instagramLink} target="_blank" rel="noopener noreferrer"><Instagram size={12} className="mr-1" /> INSTAGRAM</a>
-              </Button>
+              <div className="grid grid-cols-3 gap-2">
+                <Button size="sm" variant="outline" className="h-9 rounded-md border-white/20 text-white font-black text-[9px] uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300" asChild disabled={!mapsLink}>
+                  <a href={mapsLink} target="_blank" rel="noopener noreferrer"><MapPin size={12} className="mr-1" /> MAPS</a>
+                </Button>
+                <Button size="sm" variant="outline" className="h-9 rounded-md border-white/20 text-white font-black text-[9px] uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300" asChild disabled={!whatsappLink}>
+                  <a href={whatsappLink} target="_blank" rel="noopener noreferrer"><MessageSquare size={12} className="mr-1" /> WHATSAPP</a>
+                </Button>
+                <Button size="sm" variant="outline" className="h-9 rounded-md border-white/20 text-white font-black text-[9px] uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300" asChild disabled={!unit.instagramLink}>
+                  <a href={unit.instagramLink} target="_blank" rel="noopener noreferrer"><Instagram size={12} className="mr-1" /> INSTAGRAM</a>
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       <style>{`
