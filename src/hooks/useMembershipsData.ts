@@ -51,7 +51,8 @@ const EVO_API_KEYS = [
   'ZGFya3NneW06NDc4Nzk2MzgtODFBMS00QUM5LUJCRUUtNzdDREMwNENCRUNG', // Chave da API de Santo André
   'ZGFya3NneW06NUQ1RkZBQzAtNjNEQy00NzI3LTk5QjEtMzcyNkYxQjc3MDY3', // Chave da API de Mauá
   'ZGFya3NneW06NzhEODI5QzItMDJDNC00QkVBLUJDNkEtMjBFNUVEOTJEMjFF',
-  'ZGFya3NneW06RjJBNkQzRTAtN0U3RS00MUZCLThCRTktQjI4Q0EwRDAyRUFB'  // Chave da API de Jorge
+  'ZGFya3NneW06RjJBNkQzRTAtN0U3RS00MUZCLThCRTktQjI4Q0EwRDAyRUFB', // Chave da API de Jorge
+  'ZGFya3NneW06N0I0MEM3RDItQjc0Qi00Q0U0LTkyQTItRUUyQzNCQTNFRTVG'  // Chave da API de Ribeirão Preto
 ].filter(Boolean); // Filtra chaves que possam ser vazias ou undefined
 
 const fetchMemberships = async (): Promise<Membership[]> => {
