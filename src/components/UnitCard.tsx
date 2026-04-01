@@ -34,7 +34,9 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
     
     const promotionalPlanNames = [
       "PLANO DARKS PROMOCIONAL",
-      "PLANO RECORRENTE (DARKS)"
+      "PLANO RECORRENTE (DARKS)",
+      "PLANO DARKS RECORRENTE PRIME (PRÉ VENDA)",
+      "PLANO DARKS RECORRENTE PRIME (PRE VENDA)"
     ];
 
     const promotionalPlan = unitMemberships.find(m => promotionalPlanNames.includes(m.nameMembership.trim().toUpperCase()));
