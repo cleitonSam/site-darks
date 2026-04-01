@@ -116,7 +116,16 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
     };
   }, [selectedPlan, unit.isPromotion]);
 
-  const whatsappLink = unit.whatsappNumber 
+  // Gera o link de matrícula: usa urlSale do EVO se disponível, senão constrói o padrão
+  const purchaseUrl = useMemo(() => {
+    if (selectedPlan?.urlSale) return selectedPlan.urlSale;
+    if (selectedPlan && unit.idBranch) {
+      return `https://evo-totem.w12app.com.br/darksgym/${unit.idBranch}/site/landing-page/checkout/${selectedPlan.idMembership}/0`;
+    }
+    return undefined;
+  }, [selectedPlan, unit.idBranch]);
+
+  const whatsappLink = unit.whatsappNumber
     ? `https://wa.me/${unit.whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent("Olá, gostaria de mais informações sobre a unidade " + unit.name + "!")}`
     : undefined;
 
@@ -257,9 +266,9 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
               size="sm" 
               className="h-10 w-full rounded-md bg-white text-black font-black text-[10px] uppercase tracking-widest hover:bg-zinc-200 mb-2 transition-all duration-300"
               asChild
-              disabled={!selectedPlan?.urlSale}
+              disabled={!purchaseUrl}
             >
-              <a href={selectedPlan?.urlSale || '#'} target="_blank" rel="noopener noreferrer">
+              <a href={purchaseUrl || '#'} target="_blank" rel="noopener noreferrer">
                 <ShoppingCart size={12} className="mr-2" /> MATRICULAR
               </a>
             </Button>
