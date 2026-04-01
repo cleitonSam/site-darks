@@ -32,29 +32,35 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
 
   const availableMemberships = useMemo(() => {
     const unitMemberships = allMemberships.filter(m => m.idBranch === unit.idBranch);
-    
+
+    // Normaliza texto removendo acentos para comparação segura
+    const normalize = (s: string) =>
+      s.trim().toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
     const promotionalPlanNames = [
       "PLANO DARKS PROMOCIONAL",
       "PLANO RECORRENTE (DARKS)",
-      "PLANO DARKS RECORRENTE PRIME (PRÉ VENDA)",
-      "PLANO DARKS RECORRENTE PRIME (PRE VENDA)"
+      "PLANO DARKS RECORRENTE PRIME (PRE VENDA)",
     ];
 
-    const promotionalPlan = unitMemberships.find(m => promotionalPlanNames.includes(m.nameMembership.trim().toUpperCase()));
+    const promotionalPlan = unitMemberships.find(m =>
+      promotionalPlanNames.includes(normalize(m.nameMembership))
+    );
 
     const planNamesToShow = [
       "PLANO ANUAL",
+      "COMBO 3 DIARIAS",
       "COMBO 3 DIARIA",
     ];
 
     if (promotionalPlan) {
-      planNamesToShow.push(promotionalPlan.nameMembership.trim().toUpperCase());
+      planNamesToShow.push(normalize(promotionalPlan.nameMembership));
     } else {
       planNamesToShow.push("PLANO RECORRENTE");
     }
 
     return unitMemberships
-      .filter(membership => planNamesToShow.includes(membership.nameMembership.trim().toUpperCase()))
+      .filter(membership => planNamesToShow.includes(normalize(membership.nameMembership)))
       .sort((a, b) => {
         const primaryRecurrent = "PLANO DARKS PROMOCIONAL";
         const secondaryRecurrent = "PLANO RECORRENTE (DARKS)";
@@ -63,11 +69,12 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
         const bName = b.nameMembership.trim().toUpperCase();
 
         const getScore = (name: string) => {
-          if (name === primaryRecurrent) return 1;
-          if (name === secondaryRecurrent) return 2;
-          if (name === tertiaryRecurrent) return 3;
-          if (name === "PLANO ANUAL") return 4;
-          return 5; // Other plans
+          const n = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          if (n === primaryRecurrent.normalize("NFD").replace(/[\u0300-\u036f]/g, "")) return 1;
+          if (n === secondaryRecurrent.normalize("NFD").replace(/[\u0300-\u036f]/g, "")) return 2;
+          if (n === tertiaryRecurrent.normalize("NFD").replace(/[\u0300-\u036f]/g, "")) return 3;
+          if (n === "PLANO ANUAL") return 4;
+          return 5;
         };
 
         return getScore(aName) - getScore(bName);
