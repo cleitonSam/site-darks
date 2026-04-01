@@ -298,11 +298,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
 
             </div>
           ) : (
-            <div className="flex-grow flex flex-col justify-center items-center text-center text-white/50 bg-zinc-900/70 backdrop-blur-sm border border-white/10 p-4 rounded-lg mb-4">
-              <Cpu className="w-10 h-10 mb-3 animate-pulse text-white/20" />
-              <p className="text-sm">Nenhum plano encontrado.</p>
-              <p className="text-xs">Verifique o 'ID Filial (EVO API)'.</p>
-            </div>
+            <div className="flex-grow" />
           )}
 
           {!unit.isComingSoon && (
