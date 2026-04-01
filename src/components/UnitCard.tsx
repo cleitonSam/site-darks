@@ -295,7 +295,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
                     ✅ Cancelamento <span className="text-green-400 font-black">sem multa</span>
                   </p>
                 )}
-              )}
+              </div>
             </div>
           ) : (
             <div className="flex-grow flex flex-col justify-center items-center text-center text-white/50 bg-zinc-900/70 backdrop-blur-sm border border-white/10 p-4 rounded-lg mb-4">
