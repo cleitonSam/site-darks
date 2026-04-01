@@ -32,21 +32,21 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const availableMemberships = useMemo(() => {
-    const unitMemberships = allMemberships.filter(m => m.idBranch === unit.idBranch);
-
     // Normaliza texto removendo acentos para comparação segura
     const normalize = (s: string) =>
       s.trim().toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-    // Ribeirão Preto: mostrar apenas o plano PRÉ VENDA
+    // Ribeirão Preto: idBranch fixo = 3, mostrar apenas o plano PRÉ VENDA
     const isRibeirao = unit.idBranch === 3 ||
       unit.name.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes("RIBEIRAO");
 
     if (isRibeirao) {
-      return unitMemberships.filter(m =>
-        normalize(m.nameMembership) === "PLANO DARKS RECORRENTE PRIME (PRE VENDA)"
-      );
+      return allMemberships
+        .filter(m => m.idBranch === 3)
+        .filter(m => normalize(m.nameMembership) === "PLANO DARKS RECORRENTE PRIME (PRE VENDA)");
     }
+
+    const unitMemberships = allMemberships.filter(m => m.idBranch === unit.idBranch);
 
     const promotionalPlanNames = [
       "PLANO DARKS PROMOCIONAL",
