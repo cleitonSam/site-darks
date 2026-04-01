@@ -37,6 +37,16 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
     const normalize = (s: string) =>
       s.trim().toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
+    // Ribeirão Preto: mostrar apenas o plano PRÉ VENDA
+    const isRibeirao = unit.idBranch === 3 ||
+      unit.name.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes("RIBEIRAO");
+
+    if (isRibeirao) {
+      return unitMemberships.filter(m =>
+        normalize(m.nameMembership) === "PLANO DARKS RECORRENTE PRIME (PRE VENDA)"
+      );
+    }
+
     const promotionalPlanNames = [
       "PLANO DARKS PROMOCIONAL",
       "PLANO RECORRENTE (DARKS)",
@@ -267,35 +277,6 @@ const UnitCard: React.FC<UnitCardProps> = ({ unit, allMemberships }) => {
                 </div>
               )}
 
-              {/* Acesso por tier e info de cancelamento */}
-              <div className="pt-3 border-t border-white/10 space-y-1.5">
-                {/* Acesso entre unidades */}
-                {unit.tier === 'PRO' && (
-                  <p className="text-[9px] text-white/50 text-center uppercase tracking-wider">
-                    🏋️ Treina em todas as unidades <span className="text-amber-400 font-black">PRO</span>
-                  </p>
-                )}
-                {unit.tier === 'PRIME' && (
-                  <p className="text-[9px] text-white/50 text-center uppercase tracking-wider">
-                    🏋️ Treina em todas as unidades <span className="text-slate-300 font-black">PRO</span> e <span className="text-slate-300 font-black">PRIME</span>
-                  </p>
-                )}
-                {unit.tier === 'DIAMOND' && (
-                  <p className="text-[9px] text-white/50 text-center uppercase tracking-wider">
-                    💎 <span className="text-cyan-400 font-black">Em breve:</span> Treina em todas as unidades da Rede
-                  </p>
-                )}
-                {/* Cancelamento */}
-                {planDetails.hasInstallments ? (
-                  <p className="text-[9px] text-white/40 text-center uppercase tracking-wider">
-                    ⚠️ Cancelamento antecipado sujeito a <span className="text-red-400 font-black">multa</span>
-                  </p>
-                ) : (
-                  <p className="text-[9px] text-white/40 text-center uppercase tracking-wider">
-                    ✅ Cancelamento <span className="text-green-400 font-black">sem multa</span>
-                  </p>
-                )}
-              </div>
             </div>
           ) : (
             <div className="flex-grow flex flex-col justify-center items-center text-center text-white/50 bg-zinc-900/70 backdrop-blur-sm border border-white/10 p-4 rounded-lg mb-4">
