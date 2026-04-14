@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(TOKEN=\"nrUcWLti4g7sq9DDozerYytubAt8_7lvFEw0Ek6H\")",
+      "Bash(TABLE=\"mr6apeqfyqput1z\")",
+      "Bash(BASE=\"https://app.nocodb.com/api/v2/meta/tables/$TABLE/columns\")",
+      "Bash(__NEW_LINE_5cba1c9c8981ad2a__ for:*)",
+      "Bash(do)",
+      "Bash(echo \"Criando: $col\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" -X POST \"$BASE\" -H \"xc-token: $TOKEN\" -H \"Content-Type: application/json\" -d \"$col\")",
+      "Bash(done)",
+      "Bash(curl -s -X POST https://app.nocodb.com/api/v2/tables/mr6apeqfyqput1z/records -H 'xc-token: nrUcWLti4g7sq9DDozerYytubAt8_7lvFEw0Ek6H' -H 'Content-Type: application/json' -d '[{\"\"\"\"Nome\"\"\"\":\"\"\"\"TESTE\"\"\"\",\"\"\"\"Sobrenome\"\"\"\":\"\"\"\"SISTEMA\"\"\"\",\"\"\"\"Email\"\"\"\":\"\"\"\"teste@darks.com\"\"\"\",\"\"\"\"WhatsApp\"\"\"\":\"\"\"\"\\(11\\) 99999-9999\"\"\"\",\"\"\"\"Investimento\"\"\"\":\"\"\"\"R$ 400.000\"\"\"\"}]')",
+      "Bash(python -m json.tool)"
+    ]
+  }
+}
