@@ -1,0 +1,7 @@
+.dyad/
+node_modules/
+.env
+.env.local
+.env.*.local
+dist/
+.claude/
